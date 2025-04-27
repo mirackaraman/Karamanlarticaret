@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -21,7 +21,8 @@ const userSchema = mongoose.Schema(
   }
 );
 
-// Hata engelleme: model zaten varsa tekrar oluşturma
+// Eğer daha önce "User" modeli tanımlandıysa tekrar tanımlamayı önler
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
+// Burada userModel olarak export ediyoruz
 module.exports = User;
