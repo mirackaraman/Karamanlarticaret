@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const CartPage = () => {
-  const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { cart = [], updateQuantity, removeFromCart, clearCart } = useCart();
   const navigate = useNavigate();
 
   const total = cart.reduce((acc, item) => {
@@ -118,7 +118,12 @@ const CartPage = () => {
 
           <button
             onClick={handleCheckout}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold"
+            disabled={cart.length === 0}
+            className={`w-full py-2 rounded font-semibold transition ${
+              cart.length === 0
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700 text-white"
+            }`}
           >
             ➡️ Siparişi Tamamla
           </button>

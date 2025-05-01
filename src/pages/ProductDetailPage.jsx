@@ -2,22 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useCart } from "../context/CartContext"; // 🛒 Sepet context'i
+import { useCart } from "../context/CartContext";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [qty, setQty] = useState(1); // ✅ Adet (quantity) state
   const { addToCart } = useCart();
 
   useEffect(() => {
     fetchProduct();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  
 
   const fetchProduct = async () => {
     try {
@@ -44,7 +42,7 @@ const ProductDetailPage = () => {
       toast.success("✅ Yorum başarıyla eklendi!");
       setRating(0);
       setComment("");
-      fetchProduct(); // Yorum sonrası güncelle
+      fetchProduct();
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "❌ Yorum eklenemedi.");
@@ -112,16 +110,25 @@ const ProductDetailPage = () => {
 
             <p className="mt-6 text-gray-700">{product.description}</p>
 
-            {/* 🛒 Sepete Ekle Butonu */}
-            <button
-              onClick={() => {
-                addToCart(product);
-                toast.success("🛒 Ürün sepete eklendi!");
-              }}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded mt-6"
-            >
-              Sepete Ekle
-            </button>
+            {/* 🛒 Sepete Ekleme */}
+            <div className="flex items-center gap-4 mt-6">
+              <input
+                type="number"
+                min="1"
+                value={qty}
+                onChange={(e) => setQty(Number(e.target.value))}
+                className="border p-2 w-20 text-center rounded"
+              />
+              <button
+                onClick={() => {
+                  addToCart({ ...product, quantity: qty }); // ✅ quantity ile gönderiyoruz
+                  toast.success("🛒 Ürün sepete eklendi!");
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
+              >
+                Sepete Ekle
+              </button>
+            </div>
 
             <p className="text-sm text-gray-500 mt-2">
               Sepete eklemek için giriş yapmanız gerekebilir.
